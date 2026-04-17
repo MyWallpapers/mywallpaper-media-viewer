@@ -10,7 +10,7 @@
     "display"
   ],
   "license": "MIT",
-  "repository": "https://github.com/MyWallpapers/mywallpaper-media-viewer",
+  "repository": "https://github.com/MyWallpapers/mywallpaper-addon-media-viewer",
   "permissions": {
     "storage": {
       "quota": 256
