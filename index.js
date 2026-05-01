@@ -1,6 +1,29 @@
-import { jsxs as y, Fragment as ne, jsx as a } from "react/jsx-runtime";
-import { useSettings as le, useViewport as se, useFiles as ue, useAudio as de, useTheme as ce, useNetwork as pe } from "@mywallpaper/sdk-react";
-import { useState as w, useRef as x, useMemo as C, useCallback as p, useEffect as k } from "react";
+const __MYWALLPAPER_WIDGET_RUNTIME_CONTRACT__ = "1";
+if (!__canvasRuntime) {
+      throw new Error('Canvas runtime globals are unavailable');
+    }
+if (!__canvasRuntime.react || !__canvasRuntime.reactJsxRuntime || !__canvasRuntime.sdkReact || !__canvasRuntime.sdkContracts || !__canvasRuntime.sdkPermissions) {
+      throw new Error('Canvas runtime globals are unavailable');
+    }
+const __canvasRuntimeReact = __canvasRuntime.react;
+const __canvasRuntimeJsxRuntime = __canvasRuntime.reactJsxRuntime;
+const __canvasRuntimeSdk = __canvasRuntime.sdkReact;
+const __canvasRuntimeSdkContracts = __canvasRuntime.sdkContracts;
+const __canvasRuntimeSdkPermissions = __canvasRuntime.sdkPermissions;
+const y = __canvasRuntimeJsxRuntime.jsxs;
+const ne = __canvasRuntimeJsxRuntime.Fragment;
+const r = __canvasRuntimeJsxRuntime.jsx;
+const le = __canvasRuntimeSdk.useSettings;
+const se = __canvasRuntimeSdk.useViewport;
+const ue = __canvasRuntimeSdk.useFiles;
+const de = __canvasRuntimeSdk.useAudio;
+const ce = __canvasRuntimeSdk.useTheme;
+const pe = __canvasRuntimeSdk.useNetwork;
+const w = __canvasRuntimeReact.useState;
+const x = __canvasRuntimeReact.useRef;
+const C = __canvasRuntimeReact.useMemo;
+const c = __canvasRuntimeReact.useCallback;
+const k = __canvasRuntimeReact.useEffect;
 const D = ["mp4", "webm", "ogg", "mov", "m4v", "avi", "mkv"], _ = ["jpg", "jpeg", "png", "gif", "webp", "svg", "ico", "bmp", "avif", "tiff"], q = ["mp3", "wav", "ogg", "flac", "aac", "m4a", "opus", "weba", "wma"], me = {
   youtube: {
     patterns: [
@@ -10,7 +33,7 @@ const D = ["mp4", "webm", "ogg", "mov", "m4v", "avi", "mkv"], _ = ["jpg", "jpeg"
       /youtube\.com\/shorts\/([^?]+)/
     ],
     embedUrl: (e, t) => {
-      const d = new URLSearchParams({
+      const u = new URLSearchParams({
         autoplay: t.autoplay ? "1" : "0",
         mute: t.muted ? "1" : "0",
         loop: t.loop ? "1" : "0",
@@ -19,7 +42,7 @@ const D = ["mp4", "webm", "ogg", "mov", "m4v", "avi", "mkv"], _ = ["jpg", "jpeg"
         playsinline: "1",
         enablejsapi: "0"
       });
-      return `https://www.youtube.com/embed/${e}?${d.toString()}`;
+      return `https://www.youtube.com/embed/${e}?${u.toString()}`;
     }
   },
   vimeo: {
@@ -28,9 +51,9 @@ const D = ["mp4", "webm", "ogg", "mov", "m4v", "avi", "mkv"], _ = ["jpg", "jpeg"
   },
   twitch: {
     patterns: [/twitch\.tv\/videos\/(\d+)/, /twitch\.tv\/([^/?]+)$/],
-    embedUrl: (e, t, d) => {
-      const u = typeof location < "u" ? location.hostname : "localhost";
-      return d ? `https://player.twitch.tv/?video=${e}&parent=${u}&autoplay=${t.autoplay}` : `https://player.twitch.tv/?channel=${e}&parent=${u}&autoplay=${t.autoplay}&muted=${t.muted}`;
+    embedUrl: (e, t, u) => {
+      const p = typeof location < "u" ? location.hostname : "localhost";
+      return u ? `https://player.twitch.tv/?video=${e}&parent=${p}&autoplay=${t.autoplay}` : `https://player.twitch.tv/?channel=${e}&parent=${p}&autoplay=${t.autoplay}&muted=${t.muted}`;
     }
   },
   dailymotion: {
@@ -39,7 +62,6 @@ const D = ["mp4", "webm", "ogg", "mov", "m4v", "avi", "mkv"], _ = ["jpg", "jpeg"
   }
 };
 function fe(e, t = "") {
-  var d;
   if (!e) return null;
   if (t) {
     if (t.startsWith("video/")) return "video";
@@ -50,12 +72,12 @@ function fe(e, t = "") {
     return e.startsWith("data:video/") ? "video" : e.startsWith("data:image/") ? "image" : e.startsWith("data:audio/") ? "audio" : null;
   if (e.startsWith("blob:")) return "unknown";
   try {
-    const r = new URL(e).pathname.toLowerCase().split(".").pop() || "";
-    if (D.includes(r)) return "video";
-    if (_.includes(r)) return "image";
-    if (q.includes(r)) return "audio";
+    const m = new URL(e).pathname.toLowerCase().split(".").pop() || "";
+    if (D.includes(m)) return "video";
+    if (_.includes(m)) return "image";
+    if (q.includes(m)) return "audio";
   } catch {
-    const u = ((d = e.split(".").pop()) == null ? void 0 : d.toLowerCase().split("?")[0]) || "";
+    const u = e.split(".").pop()?.toLowerCase().split("?")[0] || "";
     if (D.includes(u)) return "video";
     if (_.includes(u)) return "image";
     if (q.includes(u)) return "audio";
@@ -68,19 +90,19 @@ function he(e) {
 }
 function be(e, t) {
   if (!e) return null;
-  const d = {
+  const u = {
     autoplay: t.autoplay ?? !0,
     muted: t.muted ?? !0,
     loop: t.loop ?? !1
   };
-  for (const [u, h] of Object.entries(me))
-    for (const r of h.patterns) {
-      const E = e.match(r);
+  for (const [p, m] of Object.entries(me))
+    for (const a of m.patterns) {
+      const E = e.match(a);
       if (E) {
-        const I = E[1], l = u === "twitch" && e.includes("/videos/");
+        const I = E[1], l = p === "twitch" && e.includes("/videos/");
         return {
-          platform: u,
-          embedUrl: h.embedUrl(I, d, l),
+          platform: p,
+          embedUrl: m.embedUrl(I, u, l),
           videoId: I
         };
       }
@@ -88,15 +110,14 @@ function be(e, t) {
   return null;
 }
 function H(e, t) {
-  var h;
-  const d = ((h = e.split(".").pop()) == null ? void 0 : h.toLowerCase().split("?")[0]) || "";
+  const u = e.split(".").pop()?.toLowerCase().split("?")[0] || "";
   return t === "video" ? {
     mp4: "video/mp4",
     webm: "video/webm",
     ogg: "video/ogg",
     mov: "video/quicktime",
     m4v: "video/mp4"
-  }[d] || "" : {
+  }[u] || "" : {
     mp3: "audio/mpeg",
     wav: "audio/wav",
     ogg: "audio/ogg",
@@ -106,9 +127,9 @@ function H(e, t) {
     opus: "audio/opus",
     weba: "audio/webm",
     wma: "audio/x-ms-wma"
-  }[d] || "";
+  }[u] || "";
 }
-const f = {
+const h = {
   container: {
     width: "100%",
     height: "100%",
@@ -198,23 +219,23 @@ const f = {
 }
 `;
 function ge() {
-  return /* @__PURE__ */ a("div", { style: f.fallbackIcon, children: /* @__PURE__ */ y("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.5", style: { width: "100%", height: "100%" }, children: [
-    /* @__PURE__ */ a("rect", { x: "3", y: "3", width: "18", height: "18", rx: "2", ry: "2" }),
-    /* @__PURE__ */ a("circle", { cx: "8.5", cy: "8.5", r: "1.5" }),
-    /* @__PURE__ */ a("polyline", { points: "21,15 16,10 5,21" })
+  return /* @__PURE__ */ r("div", { style: h.fallbackIcon, children: /* @__PURE__ */ y("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.5", style: { width: "100%", height: "100%" }, children: [
+    /* @__PURE__ */ r("rect", { x: "3", y: "3", width: "18", height: "18", rx: "2", ry: "2" }),
+    /* @__PURE__ */ r("circle", { cx: "8.5", cy: "8.5", r: "1.5" }),
+    /* @__PURE__ */ r("polyline", { points: "21,15 16,10 5,21" })
   ] }) });
 }
 function ve({ isDark: e }) {
-  return /* @__PURE__ */ a("div", { style: f.loading(e), children: /* @__PURE__ */ a("div", { style: f.spinner(e) }) });
+  return /* @__PURE__ */ r("div", { style: h.loading(e), children: /* @__PURE__ */ r("div", { style: h.spinner(e) }) });
 }
 function we({ message: e, isDark: t }) {
-  return /* @__PURE__ */ y("div", { style: f.fallback(t), children: [
-    /* @__PURE__ */ a(ge, {}),
-    /* @__PURE__ */ a("p", { style: f.fallbackText, children: e })
+  return /* @__PURE__ */ y("div", { style: h.fallback(t), children: [
+    /* @__PURE__ */ r(ge, {}),
+    /* @__PURE__ */ r("p", { style: h.fallbackText, children: e })
   ] });
 }
 function Fe() {
-  const e = le(), { width: t, height: d } = se(), { request: u, isFileReference: h } = ue(), r = de(), E = ce(), { fetch: I } = pe(), [l, S] = w(null), [g, U] = w(null), [$, j] = w(null), [L, i] = w(!0), [M, n] = w(null), N = x(null), P = x(null), c = x(!1), b = x(null), v = x(0), V = E.mode === "dark", A = C(() => he(e), [
+  const e = le(), { width: t, height: u } = se(), { request: p, isFileReference: m } = ue(), a = de(), E = ce(), { fetch: I } = pe(), [l, S] = w(null), [g, U] = w(null), [$, j] = w(null), [L, i] = w(!0), [M, n] = w(null), N = x(null), P = x(null), d = x(!1), b = x(null), v = x(0), V = E.mode === "dark", A = C(() => he(e), [
     e.blur,
     e.brightness,
     e.contrast,
@@ -222,7 +243,7 @@ function Fe() {
     e.hueRotate
   ]), F = C(
     () => ({
-      ...f.mediaElement,
+      ...h.mediaElement,
       objectFit: e.objectFit || "contain",
       objectPosition: e.objectPosition || "center",
       opacity: (e.opacity ?? 100) / 100,
@@ -232,22 +253,22 @@ function Fe() {
     [e.objectFit, e.objectPosition, e.opacity, e.borderRadius, A]
   ), X = C(
     () => ({
-      ...f.container,
+      ...h.container,
       backgroundColor: e.backgroundColor || "transparent",
       borderRadius: `${e.borderRadius || 0}px`
     }),
     [e.backgroundColor, e.borderRadius]
-  ), R = p(async () => {
+  ), R = c(async () => {
     const o = ++v.current;
-    i(!0), n(null), j(null), S(null), U(null), c.current && (r.stop(), c.current = !1);
+    i(!0), n(null), j(null), S(null), U(null), d.current && (a.stop(), d.current = !1);
     try {
       let s = null, O = "";
       if (e.sourceType === "file")
-        if (h(e.mediaFile)) {
-          const m = await u("mediaFile");
+        if (m(e.mediaFile)) {
+          const f = await p("mediaFile");
           if (o !== v.current) return;
-          if (m)
-            s = m;
+          if (f)
+            s = f;
           else {
             i(!1), n("No file uploaded");
             return;
@@ -257,25 +278,25 @@ function Fe() {
           return;
         }
       else {
-        const m = e.mediaUrl;
-        if (!m || m.length === 0) {
+        const f = e.mediaUrl;
+        if (!f || f.length === 0) {
           i(!1), n("No URL configured");
           return;
         }
-        if (m.startsWith("data:")) {
-          const B = m.match(/^data:([^;,]+)/);
-          if (B && (O = B[1]), m.length < 50) {
+        if (f.startsWith("data:")) {
+          const B = f.match(/^data:([^;,]+)/);
+          if (B && (O = B[1]), f.length < 50) {
             i(!1), n("File data is corrupted or too large");
             return;
           }
         }
-        const W = be(m, e);
+        const W = be(f, e);
         if (W) {
           if (o !== v.current) return;
           j(W), U("embed"), S(W.embedUrl), i(!1);
           return;
         }
-        s = m;
+        s = f;
       }
       if (!s) {
         i(!1), n(e.sourceType === "file" ? "No file uploaded" : "No URL configured");
@@ -293,7 +314,7 @@ function Fe() {
       if (o !== v.current) return;
       i(!1), n(s instanceof Error ? s.message : "Failed to load media");
     }
-  }, [e.sourceType, e.mediaUrl, e.mediaFile, e.autoplay, e.muted, e.loop, h, u, r]);
+  }, [e.sourceType, e.mediaUrl, e.mediaFile, e.autoplay, e.muted, e.loop, m, p, a]);
   k(() => {
     R();
   }, [R]), k(() => {
@@ -309,11 +330,11 @@ function Fe() {
   }, [e.refreshInterval, e.sourceType, R]), k(() => {
     const o = N.current;
     if (o) {
-      if (o.loop = e.loop, o.controls = e.showControls, o.playbackRate !== e.playbackRate && (o.playbackRate = e.playbackRate), !e.muted && !c.current) {
+      if (o.loop = e.loop, o.controls = e.showControls, o.playbackRate !== e.playbackRate && (o.playbackRate = e.playbackRate), !e.muted && !d.current) {
         const s = e.sourceType === "file" ? "mediaFile" : e.mediaUrl;
-        s && (r.play(s), r.setVolume((e.volume ?? 80) / 100), c.current = !0);
-      } else e.muted && c.current && (r.stop(), c.current = !1);
-      c.current && r.setVolume((e.volume ?? 80) / 100), e.autoplay && o.paused ? o.play().catch(() => {
+        s && (a.play(s), a.setVolume((e.volume ?? 80) / 100), d.current = !0);
+      } else e.muted && d.current && (a.stop(), d.current = !1);
+      d.current && a.setVolume((e.volume ?? 80) / 100), e.autoplay && o.paused ? o.play().catch(() => {
       }) : !e.autoplay && !o.paused && o.pause();
     }
   }, [
@@ -325,44 +346,44 @@ function Fe() {
     e.autoplay,
     e.sourceType,
     e.mediaUrl,
-    r
+    a
   ]), k(() => {
     const o = P.current;
     o && (o.loop = e.loop, o.controls = e.showControls ?? !0, o.volume = (e.volume ?? 80) / 100, e.autoplay && o.paused ? o.play().catch(() => {
     }) : !e.autoplay && !o.paused && o.pause());
   }, [e.loop, e.showControls, e.volume, e.autoplay]), k(() => () => {
-    c.current && (r.stop(), c.current = !1), b.current && clearInterval(b.current);
-  }, [r]);
-  const z = p(() => {
+    d.current && (a.stop(), d.current = !1), b.current && clearInterval(b.current);
+  }, [a]);
+  const z = c(() => {
     i(!1), n(null);
-  }, []), G = p(() => {
+  }, []), G = c(() => {
     i(!1), n(e.fallbackText || "Media unavailable");
-  }, [e.fallbackText]), K = p(() => {
+  }, [e.fallbackText]), K = c(() => {
     i(!1), n(null);
-  }, []), Y = p(() => {
+  }, []), Y = c(() => {
     i(!1), n("Failed to load video");
-  }, []), J = p(() => {
+  }, []), J = c(() => {
     i(!1), n(null);
-  }, []), Q = p(() => {
+  }, []), Q = c(() => {
     i(!1), n("Failed to load audio");
-  }, []), Z = p(() => {
+  }, []), Z = c(() => {
     i(!1), n(null);
-  }, []), ee = p(() => {
+  }, []), ee = c(() => {
     i(!1), n($ ? `Failed to load ${$.platform} video` : "Failed to load embed");
-  }, [$]), te = p(() => {
-    c.current && r.play(e.mediaUrl);
-  }, [r, e.mediaUrl]), oe = p(() => {
-    c.current && r.pause();
-  }, [r]), re = p(() => {
-    c.current && !e.loop && r.stop();
-  }, [r, e.loop]), ae = () => {
+  }, [$]), te = c(() => {
+    d.current && a.play(e.mediaUrl);
+  }, [a, e.mediaUrl]), oe = c(() => {
+    d.current && a.pause();
+  }, [a]), re = c(() => {
+    d.current && !e.loop && a.stop();
+  }, [a, e.loop]), ae = () => {
     if (!l || !g) return null;
     if (g === "embed")
-      return /* @__PURE__ */ a(
+      return /* @__PURE__ */ r(
         "iframe",
         {
           src: l,
-          style: { ...F, ...f.embedFrame },
+          style: { ...F, ...h.embedFrame },
           frameBorder: "0",
           allow: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
           allowFullScreen: !0,
@@ -372,7 +393,7 @@ function Fe() {
         }
       );
     if (g === "image")
-      return /* @__PURE__ */ a(
+      return /* @__PURE__ */ r(
         "img",
         {
           src: l,
@@ -402,8 +423,8 @@ function Fe() {
           onPause: oe,
           onEnded: re,
           children: [
-            o ? null : /* @__PURE__ */ a("source", { src: l, type: s || void 0 }),
-            o && /* @__PURE__ */ a("source", { src: l })
+            o ? null : /* @__PURE__ */ r("source", { src: l, type: s || void 0 }),
+            o && /* @__PURE__ */ r("source", { src: l })
           ]
         }
       );
@@ -416,7 +437,7 @@ function Fe() {
           ref: P,
           style: {
             ...F,
-            ...f.audioElement,
+            ...h.audioElement,
             display: "block",
             margin: "auto",
             position: "absolute",
@@ -432,8 +453,8 @@ function Fe() {
           onLoadedData: J,
           onError: Q,
           children: [
-            o ? null : /* @__PURE__ */ a("source", { src: l, type: s || void 0 }),
-            o && /* @__PURE__ */ a("source", { src: l })
+            o ? null : /* @__PURE__ */ r("source", { src: l, type: s || void 0 }),
+            o && /* @__PURE__ */ r("source", { src: l })
           ]
         }
       );
@@ -441,11 +462,11 @@ function Fe() {
     return null;
   };
   return /* @__PURE__ */ y(ne, { children: [
-    /* @__PURE__ */ a("style", { children: ye }),
+    /* @__PURE__ */ r("style", { children: ye }),
     /* @__PURE__ */ y("div", { style: X, children: [
-      /* @__PURE__ */ a("div", { style: f.mediaWrapper, children: ae() }),
-      M && !L && /* @__PURE__ */ a(we, { message: M, isDark: V }),
-      L && /* @__PURE__ */ a(ve, { isDark: V })
+      /* @__PURE__ */ r("div", { style: h.mediaWrapper, children: ae() }),
+      M && !L && /* @__PURE__ */ r(we, { message: M, isDark: V }),
+      L && /* @__PURE__ */ r(ve, { isDark: V })
     ] })
   ] });
 }
